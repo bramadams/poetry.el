@@ -532,6 +532,9 @@ that the virtualenv is always the good one).
                  (const :tag "Check when switching project.el project" project)
                  (const :tag "Check when switching buffer" switch-buffer)))
 
+(defcustom poetry-project-switching-function 'project-switch-project
+  "Function used to switch projects when using project.el"
+  :type 'function)
 
 ;;;###autoload
 (define-minor-mode poetry-tracking-mode
@@ -557,7 +560,7 @@ It ensures that your python scripts are always executed in the right environment
         ('project
          (if (version< emacs-version "28.1")
              (error "You need at least emacs 28.1 to use the `project' tracking strategy. Please update your emacs installation or set `poetry-tracking-strategy' to another value"))
-         (advice-add 'project-switch-project
+         (advice-add poetry-project-switching-function
                      :after
                      (lambda (&rest _args)
                        (poetry-track-virtualenv)))
